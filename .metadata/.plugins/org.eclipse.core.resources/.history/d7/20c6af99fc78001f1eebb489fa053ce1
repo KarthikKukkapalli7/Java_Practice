@@ -1,0 +1,23 @@
+import java.io.File;
+import java.io.IOException;
+
+
+
+
+public class CreateFile {
+	
+	
+	public static void main(String[] args) {
+		File fo = new File("D:\\Java EE\\java");
+		try {
+			if(fo.createNewFile()) {
+				System.out.print(fo.getName());
+			}else {
+				System.out.print("File already exits");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+}

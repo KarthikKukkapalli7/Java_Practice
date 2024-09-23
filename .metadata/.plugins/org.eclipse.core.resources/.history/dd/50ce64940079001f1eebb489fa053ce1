@@ -1,0 +1,14 @@
+
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class FileWriting {
+	
+	
+	public static void main(String[] args) {
+		
+		FileWriter fileWriter = new FileWriter("D:\\Java EE\\java\\File.txt")
+		
+	}
+
+}

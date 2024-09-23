@@ -1,0 +1,81 @@
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import java.security.Security;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class HelloWorld {
+
+    // Create a logger specifically for the Bouncy Castle package
+    private static final Logger logger = Logger.getLogger("org.bouncycastle");
+
+    public static void main(String[] args) {
+        // Add the Bouncy Castle provider
+        Security.addProvider(new BouncyCastleProvider());
+
+        // Configure logger to capture Bouncy Castle logs
+        configureLogger();
+
+        try {
+            // Generate AES Key using Bouncy Castle
+            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES", "BC");
+            keyGenerator.init(128);
+            SecretKey secretKey = keyGenerator.generateKey();
+
+            // Generate a fixed IV for simplicity
+            byte[] iv = new byte[16];
+            IvParameterSpec ivSpec = new IvParameterSpec(iv);
+
+            // Initialize Cipher for Encryption
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "BC");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
+
+            // Data to encrypt
+            String plaintext = "Hello, Bouncy Castle Logging!";
+            byte[] ciphertext = cipher.doFinal(plaintext.getBytes());
+
+            System.out.println("Encryption successful! Ciphertext: " + bytesToHex(ciphertext));
+
+            // Now try decryption (simulating an error by modifying the ciphertext)
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
+            ciphertext[0] = 0; // Modify ciphertext to induce an error
+            byte[] decrypted = cipher.doFinal(ciphertext);
+
+            System.out.println("Decryption successful! Decrypted text: " + new String(decrypted));
+
+        } catch (Exception e) {
+            // Log the error if something goes wrong
+            logger.log(Level.SEVERE, "An error occurred during encryption/decryption", e);
+        }
+    }
+
+    // Helper method to configure logging
+    private static void configureLogger() {
+        // Set the logger level to ALL to capture all logs
+        logger.setLevel(Level.ALL);
+
+        // Create a console handler to print logs to the console
+        ConsoleHandler handler = new ConsoleHandler();
+        handler.setLevel(Level.ALL);  // Capture all levels of logs
+        logger.addHandler(handler);
+
+        // Disable the default console logging to avoid duplicate messages
+        logger.setUseParentHandlers(false);
+
+        System.out.println("Logger configured for Bouncy Castle.");
+    }
+
+    // Utility method to convert byte array to hex string
+    private static String bytesToHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
+}

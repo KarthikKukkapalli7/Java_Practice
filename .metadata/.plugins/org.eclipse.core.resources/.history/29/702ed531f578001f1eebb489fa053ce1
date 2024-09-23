@@ -1,0 +1,54 @@
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import java.security.Security;
+import java.util.Base64;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class HelloWorld {
+
+	
+	static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
+	
+	public static void main(String[] args) {
+		
+		final Logger logger = Logger.getLogger(HelloWorld.class.getName());
+		logger.setLevel(Level.FINEST);
+		logger.info("Hello world");
+		logger.severe("This is sever");
+		try {
+		KeyGenerator keyGenerator = KeyGenerator.getInstance("AES", "BC");
+        keyGenerator.init(256); // AES-256
+        SecretKey secretKey = keyGenerator.generateKey();
+
+        // Generate Initialization Vector (IV)
+        byte[] iv = new byte[16]; // 16 bytes for AES
+        IvParameterSpec ivSpec = new IvParameterSpec(iv);
+
+        // Initialize Cipher for Encryption
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "BC");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
+
+        // Encrypt data
+        String plainText = "Hello, Bouncy Castle!";
+        byte[] encryptedData = cipher.doFinal(plainText.getBytes());
+
+        // Encode encrypted data as Base64 for readable output
+        String encryptedBase64 = Base64.getEncoder().encodeToString(encryptedData);
+        System.out.println("Encrypted Text (Base64): " + encryptedBase64);
+		
+		}
+	}
+	
+}
+
+
+
+

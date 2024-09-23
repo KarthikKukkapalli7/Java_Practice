@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;Files&apos; to &apos;FileSystemManagement&apos;" description="Rename resource &apos;Files&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="/Files" name="FileSystemManagement" stamp="1727023902694" updateReferences="true"/>
+</session>
